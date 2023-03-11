@@ -1,24 +1,27 @@
-import React, { useState } from "react";
-import MainContainer from "./components/MainContainer";
+import { stringify } from 'postcss';
+import React, { useEffect, useState } from 'react'
+import ExpenseControl from './components/ExpenseControl';
+import Start from './components/Start'
 
 const App = () => {
-  const [money, setMoney] = useState(0);
+  const [budget, setBudget] = useState(0);
+
+  useEffect(() => {
+    const itemLS = JSON.parse(localStorage.getItem("budget"));
+    setBudget(parseInt(itemLS));
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem("budget", JSON.stringify(budget))
+  }, [budget])
+  
   return (
-        <div className="h-screen">
-          <div className="w-full h-1/2 bg-blue-500 relative">
-            <h1 className="font-bold text-white text-center text-4xl pt-16">
-              Expense Control
-            </h1>
-            <MainContainer setMoney={setMoney} money={money}/>
-          </div>
-          <div className="w-full h-1/2 bg-slate-100">
-            {money > 0 
-            ? <div>filter</div>
-            : null}
+    <div>
+      {budget > 0 
+      ? <ExpenseControl budget={budget} setBudget={setBudget}/> 
+      :<Start setBudget={setBudget}/>}
+    </div>
+  )
+}
 
-          </div>
-        </div>
-  );
-};
-
-export default App;
+export default App
